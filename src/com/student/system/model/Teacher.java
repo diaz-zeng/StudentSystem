@@ -12,6 +12,13 @@ public class Teacher {
         this.dept_ID = dept_ID;
     }
 
+    public Teacher(int ID, String name, String title, int dept_ID) {
+        this.ID = ID;
+        this.name = name;
+        this.title = title;
+        this.dept_ID = dept_ID;
+    }
+
     public int getID() {
         return ID;
     }
@@ -42,5 +49,10 @@ public class Teacher {
 
     public void setDept_ID(int dept_ID) {
         this.dept_ID = dept_ID;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("姓名：%s，部门：%d，编号：%d，职称：%s",getName(),getDept_ID(),getID(),getTitle());
     }
 }

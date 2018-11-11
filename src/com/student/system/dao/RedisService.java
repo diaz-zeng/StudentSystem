@@ -9,7 +9,7 @@ public final class RedisService {
     private final String address = "192.168.31.4";
     private Jedis jedis;
 
-    private static synchronized RedisService getInstance() {
+    public static synchronized RedisService getInstance() {
         if (instance == null) {
             instance = new RedisService();
         }
@@ -30,31 +30,40 @@ public final class RedisService {
         }
     }
 
-    public void put(String key, String value) {
+    public void putSet(String key, String value) {
         jedis.sadd(key, value);
     }
 
-    public Set<String> get(String key) {
+    public Set<String> getSet(String key) {
         if (jedis.exists(key)) {
             return jedis.smembers(key);
         } else {
             return null;
         }
     }
-    public long scard(String key)
-    {
-        if(jedis.exists(key))
-        {
+
+    public void put(String key, String value) {
+        jedis.set(key, value);
+    }
+
+    public String get(String key) {
+        if (jedis.exists(key)) {
+
+            return jedis.get(key);
+        } else
+            return null;
+    }
+
+    public long scard(String key) {
+        if (jedis.exists(key)) {
             return jedis.scard(key);
-        }
-        else
+        } else
             return 0;
     }
-    public boolean remove(String key,String value)
-    {
-        if (jedis.exists(key))
-        {
-            jedis.srem(key,value);
+
+    public boolean remove(String key, String value) {
+        if (jedis.exists(key)) {
+            jedis.srem(key, value);
             return true;
         }
         return false;

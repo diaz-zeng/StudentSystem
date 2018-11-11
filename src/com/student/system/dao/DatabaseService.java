@@ -1,8 +1,11 @@
 package com.student.system.dao;
 
 import com.student.system.model.Student;
+import com.student.system.model.Teacher;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public final class DatabaseService {
     static {
@@ -38,20 +41,20 @@ public final class DatabaseService {
         }
     }
 
-    public Student insertToStudent(Student student) {
-        Student result;
+    @Nullable
+    public Student createStudent(Student student) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO STUDENTS VALUES(?,?,?,?,?)");
              PreparedStatement preparedStatement1 = connection.prepareStatement("select STUDENT_ID.nextval from dual");
              ResultSet resultSet = preparedStatement1.executeQuery()) {
             resultSet.next();
             int currID = resultSet.getInt(1);
             student.setID(currID);
-            preparedStatement.setInt(1,currID);
-            preparedStatement.setString(2,student.getName());
-            preparedStatement.setString(3,student.getGender());
-            preparedStatement.setInt(4,student.getAge());
-            preparedStatement.setInt(5,student.getClazz());
-            if(preparedStatement.execute())
+            preparedStatement.setInt(1, currID);
+            preparedStatement.setString(2, student.getName());
+            preparedStatement.setString(3, student.getGender());
+            preparedStatement.setInt(4, student.getAge());
+            preparedStatement.setInt(5, student.getClazz());
+            if (preparedStatement.execute())
                 return student;
             else
                 return null;
@@ -62,5 +65,229 @@ public final class DatabaseService {
         }
 
     }
+
+    public ArrayList<Student> getStudentOfClass(int classID) {
+        ArrayList<Student> students = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.CLAZZ = ?")) {
+            statement.setInt(1, classID);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                students.add(new Student(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(3)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
+    public ArrayList<Student> getAllStudents() {
+        ArrayList<Student> students = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                students.add(new Student(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(3)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
+    @Nullable
+    public Student getStudentByID(int ID) {
+        Student student;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.ID = ?")) {
+            statement.setInt(1, ID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return student = new Student(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(3));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<Student> getStudentByName(String name) {
+        ArrayList<Student> students = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.NAME = ?")) {
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                students.add(new Student(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(3)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
+    public ArrayList<Teacher> getAllTeachers() {
+        ArrayList<Teacher> teachers = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM TEACHERS")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                teachers.add(new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return teachers;
+    }
+
+    public ArrayList<Teacher> getTeacherByName(String name) {
+        ArrayList<Teacher> teachers = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM TEACHERS WHERE TEACHERS.NAME = ?")) {
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                teachers.add(new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return teachers;
+    }
+
+    @Nullable
+    public Teacher getTeacherByID(int ID) {
+        Teacher teacher;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM TEACHERS WHERE TEACHERS.ID = ?")) {
+            statement.setInt(1, ID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return teacher = new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Nullable
+    public Teacher createTeacher(Teacher teacher) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO TEACHERS VALUES(?,?,?,?)");
+             PreparedStatement statement1 = connection.prepareStatement("select TEACHER_ID.nextval from dual");
+             ResultSet resultSet = statement1.executeQuery()) {
+            resultSet.next();
+            int currID = resultSet.getInt(1);
+            teacher.setID(currID);
+            statement.setInt(1, currID);
+            statement.setString(2, teacher.getName());
+            statement.setInt(3, teacher.getDept_ID());
+            statement.setString(4, teacher.getTitle());
+            if (!statement.execute()) {
+                return null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return teacher;
+    }
+
+    public int createClass(String className, int owner) {
+        try (PreparedStatement statement = connection.prepareStatement("insert into CLAZZ VALUES (?,?,?)");
+             PreparedStatement statement1 = connection.prepareStatement("select CLAZZ_ID.nextval from dual");
+             ResultSet set = statement.executeQuery()) {
+            set.next();
+            int result = set.getInt(0);
+            statement.setInt(1, result);
+            statement.setString(2, className);
+            statement.setInt(3, owner);
+            if (statement.execute()) {
+                return result;
+            } else
+                return 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+    }
+
+    public boolean createCourse(String courseID, String courseName, int owner) {
+        try (PreparedStatement statement = connection.prepareStatement("insert into COURSE VALUES (?,?,?)")) {
+            statement.setString(1, courseID);
+            statement.setString(2, courseName);
+            statement.setInt(3, owner);
+            if (statement.execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public boolean putResults(int studentID, String courseID, int results) {
+        try (PreparedStatement statement = connection.prepareStatement("insert into RESULTS VALUES (?,?,?)")) {
+            if (results >= 0 && results <= 100) {
+                statement.setInt(1, studentID);
+                statement.setString(2, courseID);
+                statement.setInt(3, results);
+                if (statement.execute()) {
+                    return true;
+                }
+            }
+
+
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public ArrayList<String> getResults() {
+        ArrayList<String> results = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("select RESULTS.STU_ID , STUDENTS.NAME, RESULTS.COURSE_ID,COURSE.NAME, RESULTS.RESULTS FROM RESULTS,STUDENTS,CORSE where RESULTS.STU_ID = STUDENTS.ID and  RESULTS.COURSE_ID = COURSE.ID")){
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next())
+            {
+                results.add(String.format("学号%d：，姓名%s：，课程代号%s：，课程名称%s：，分数%d：",resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getInt(5)));
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  results;
+    }
+
+
+    @Nullable
+    public String getClassInfo(int classID) {
+        try (PreparedStatement statement = connection.prepareStatement("select CLAZZ.ID,CLAZZ.NAME,TEACHERS.NAME from CLAZZ,TACHERS WHERE CLAZZ.ID = ? AND CLAZZ.OWNER = TEACHERS.ID")) {
+            statement.setInt(1, classID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return String.format("班级ID：%d，班级名称：%s，负责老师：%s", resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+            } else
+                return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Nullable
+    public String getCourseInfo(String courseID) {
+        try (PreparedStatement statement = connection.prepareStatement("select COURSE.ID,COURSE.NAME,TEACHERS.NAME from COURSE,TEACHER WHERE COURSE.ID = ? AND COURSE.OWNER = TEACHERS.ID ")) {
+            statement.setString(1, courseID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return String.format("课程代号：%s，课程名称：%s，负责老师：%s", resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
 
 }
