@@ -9,7 +9,7 @@ public class LoginService {
 
     private boolean login;
 
-    private synchronized static LoginService getInstance() {
+    public synchronized static LoginService getInstance() {
         if (instance == null) {
             instance = new LoginService();
         }
@@ -28,5 +28,6 @@ public class LoginService {
     public boolean loginIn(String user, String password) {
         return login = password.equals(redisService.get(user));
     }
+
 
 }

@@ -62,8 +62,9 @@ public class Student {
     public String getGender() {
         return gender;
     }
+
     @Override
     public String toString() {
-        return String.format("姓名：%s，学号：%d，班级：%d，年龄：%d，性别：%s",getName(),getID(),getClazz(),getGender());
+        return String.format("姓名：%s，学号：%d，班级：%d，年龄：%d，性别：%s", getName(), getID(), getClazz(), getGender());
     }
 }

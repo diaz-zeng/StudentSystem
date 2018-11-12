@@ -61,11 +61,16 @@ public final class RedisService {
             return 0;
     }
 
-    public boolean remove(String key, String value) {
+    public boolean remove(String key) {
         if (jedis.exists(key)) {
-            jedis.srem(key, value);
+            jedis.del(key);
             return true;
         }
         return false;
     }
+
+    public boolean isExists(String key) {
+        return jedis.exists(key);
+    }
+
 }
