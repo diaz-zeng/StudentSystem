@@ -62,7 +62,7 @@ public class BasicView {
         }
     }
 
-    public void printMenu() {
+    private void printMenu() {
         System.out.println("欢迎使用" + (loginService.isLogin() ? "(已登录)" : "(未登录)"));
         System.out.println("1.按学号查询学生");
         System.out.println("2.按姓名查询学生");
