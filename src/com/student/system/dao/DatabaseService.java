@@ -70,7 +70,8 @@ public final class DatabaseService {
 
     public ArrayList<Teacher> getDetpInfo(int detp_ID) {
         ArrayList<Teacher> teachers = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement("SELECT TEACHERS FROM TEACHERS WHERE TEACHERS.DETP_ID = ? ")) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT TEACHERS.* FROM TEACHERS WHERE TEACHERS.DEPT_ID = ? ")) {
+            statement.setInt(1,detp_ID);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 teachers.add(new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3)));
@@ -133,17 +134,17 @@ public final class DatabaseService {
     }
 
     public Student getStudentByID(int ID) {
-        Student student;
+        Student student =null;
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.ID = ?")) {
             statement.setInt(1, ID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return student = new Student(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(3));
+                student = new Student(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(3));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return student;
     }
 
     public ArrayList<Student> getStudentByName(String name) {
@@ -188,17 +189,17 @@ public final class DatabaseService {
     }
 
     public Teacher getTeacherByID(int ID) {
-        Teacher teacher;
+        Teacher teacher =null;
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM TEACHERS WHERE TEACHERS.ID = ?")) {
             statement.setInt(1, ID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return teacher = new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3));
+                teacher = new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return teacher;
     }
 
     public Teacher createTeacher(Teacher teacher) {
@@ -225,8 +226,8 @@ public final class DatabaseService {
 
     public int createClass(String className, int owner) {
         try (PreparedStatement statement = connection.prepareStatement("insert into CLAZZ VALUES (?,?,?)");
-             PreparedStatement statement1 = connection.prepareStatement("select CLAZZ_ID.nextval from dual");
-             ResultSet set = statement.executeQuery()) {
+             PreparedStatement statement1 = connection.prepareStatement("select CLASS_ID.nextval from dual");
+             ResultSet set = statement1.executeQuery()) {
             set.next();
             int result = set.getInt(0);
             statement.setInt(1, result);
@@ -249,10 +250,10 @@ public final class DatabaseService {
             statement.setString(1, courseID);
             statement.setString(2, courseName);
             statement.setInt(3, owner);
-            if (statement.execute()) {
-                return true;
-            } else {
+            if (!statement.execute()) {
                 return false;
+            } else {
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -281,7 +282,7 @@ public final class DatabaseService {
 
     public ArrayList<String> getResults() {
         ArrayList<String> results = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement("select RESULTS.STU_ID , STUDENTS.NAME, RESULTS.COURSE_ID,COURSE.NAME, RESULTS.RESULTS FROM RESULTS,STUDENTS,CORSE where RESULTS.STU_ID = STUDENTS.ID and  RESULTS.COURSE_ID = COURSE.ID")) {
+        try (PreparedStatement statement = connection.prepareStatement("select RESULTS.STU_ID , STUDENTS.NAME, RESULTS.COURSE_ID,COURSE.NAME, RESULTS.RESULTS FROM RESULTS,STUDENTS,COURSE where RESULTS.STU_ID = STUDENTS.ID and  RESULTS.COURSE_ID = COURSE.ID")) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 results.add(String.format("学号%d：，姓名%s：，课程代号%s：，课程名称%s：，分数%d：", resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5)));
@@ -294,7 +295,7 @@ public final class DatabaseService {
 
 
     public String getClassInfo(int classID) {
-        try (PreparedStatement statement = connection.prepareStatement("select CLAZZ.ID,CLAZZ.NAME,TEACHERS.NAME from CLAZZ,TACHERS WHERE CLAZZ.ID = ? AND CLAZZ.OWNER = TEACHERS.ID")) {
+        try (PreparedStatement statement = connection.prepareStatement("select CLAZZ.ID,CLAZZ.NAME,TEACHERS.NAME from CLAZZ,TEACHERS WHERE CLAZZ.ID = ? AND CLAZZ.OWNER = TEACHERS.ID")) {
             statement.setInt(1, classID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -308,7 +309,7 @@ public final class DatabaseService {
     }
 
     public String getCourseInfo(String courseID) {
-        try (PreparedStatement statement = connection.prepareStatement("select COURSE.ID,COURSE.NAME,TEACHERS.NAME from COURSE,TEACHER WHERE COURSE.ID = ? AND COURSE.OWNER = TEACHERS.ID ")) {
+        try (PreparedStatement statement = connection.prepareStatement("select COURSE.ID,COURSE.NAME,TEACHERS.NAME from COURSE,TEACHERS WHERE COURSE.ID = ? AND COURSE.OWNER = TEACHERS.ID ")) {
             statement.setString(1, courseID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
