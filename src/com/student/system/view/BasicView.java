@@ -72,7 +72,7 @@ public class BasicView {
         System.out.println("6.查看课程信息");
         System.out.println("7.高级功能(需登陆)");
         System.out.println("8.管理员登陆");
-        System.out.print("请选则(#end退出)：");
+        System.out.println("请选择(#end退出)：");
     }
 
     public void menuGetStudentByID() {

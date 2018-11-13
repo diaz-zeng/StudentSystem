@@ -4,6 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ *
+ * 为程序全局提供数据库的链接对象，单例实现
+ * @author Diaz
+ * @since 2018-11-11
+ * @version 1
+ */
 public final class DatabaseService {
     static {
         try {
@@ -20,12 +27,22 @@ public final class DatabaseService {
     private static DatabaseService instance = null;
     private Connection connection = null;
 
+    /**
+     * 获取本类的唯一实例
+     * @return 本类的唯一实例
+     */
     public static synchronized DatabaseService getInstance() {
         if (instance == null) {
             instance = new DatabaseService();
         }
         return instance;
     }
+
+    /**
+     *
+     * 获取唯一数据库连接对象
+     * @return 连接对象
+     */
 
     public Connection getConnection() {
         return connection;

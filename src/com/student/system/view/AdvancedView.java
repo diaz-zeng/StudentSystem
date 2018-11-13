@@ -2,17 +2,89 @@ package com.student.system.view;
 
 import com.student.system.controller.AdvancedService;
 import com.student.system.controller.NotLoginExecption;
+import com.student.system.dao.RedisService;
 
 import java.util.Scanner;
 
 public class AdvancedView {
     private AdvancedService advancedService;
+    private RedisService redisService;
 
     public AdvancedView() throws NotLoginExecption {
         advancedService = AdvancedService.getInstance();
+        redisService = RedisService.getInstance();
     }
 
     public void start() {
+        while (true) {
+            printMenu();
+
+            String userInput = new Scanner(System.in).nextLine();
+            if ("#end".equals(userInput))
+                break;
+            try {
+                switch (Integer.parseInt(userInput)) {
+                    case 1: {
+                        addStudent();
+                        break;
+                    }
+                    case 2: {
+                        addTeacher();
+                        break;
+                    }
+                    case 3: {
+                        addDept();
+                        break;
+                    }
+                    case 4: {
+                        addClass();
+                        break;
+                    }
+                    case 5: {
+                        addCourse();
+                        break;
+                    }
+                    case 6: {
+                        choseCourse();
+                        break;
+                    }
+                    case 7: {
+                        putResults();
+                        break;
+                    }
+                    case 8: {
+                        deleteStudent();
+                        break;
+                    }
+                    case 9: {
+                        deleteTeacher();
+                        break;
+                    }
+                    case 10: {
+                        deleteDept();
+                        break;
+                    }
+                    case 11: {
+                        deleteClass();
+                        break;
+                    }
+                    case 12: {
+                        deleteCourse();
+                        break;
+                    }
+                    case 13: {
+                        addAdmin();
+                        break;
+                    }
+                    case 14: {
+                        removeAdmin();
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -32,7 +104,7 @@ public class AdvancedView {
         System.out.println("12.删除课程");
         System.out.println("13.添加管理员");
         System.out.println("14.删除管理员");
-        System.out.print("请选则(#end退出)：");
+        System.out.println("请选择(#end退出)：");
     }
 
     private void addStudent() {
@@ -78,6 +150,26 @@ public class AdvancedView {
             try {
                 if (!advancedService.createDept(userInput)) {
                     System.out.println("创建失败，请检查该部门是否存在！");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addClass() {
+        System.out.println("请输入班级的名字与指导老师ID");
+        String userInput = new Scanner(System.in).nextLine();
+        if ("#end".equals(userInput)) {
+            return;
+        } else {
+            try {
+                String[] datas = userInput.split(",");
+                int result = advancedService.createClass(datas[0], Integer.parseInt(datas[1]));
+                if (result > 0) {
+                    System.out.println("班级创建成功！班级ID：" + result);
+                } else {
+                    System.out.println("班级创建失败，请检查输入！");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -170,5 +262,69 @@ public class AdvancedView {
             e.printStackTrace();
         }
 
+    }
+
+    private void deleteClass() {
+        System.out.println("请输入要删除的班级ID：");
+        String userInput = new Scanner(System.in).nextLine();
+        if ("#end".equals(userInput)) {
+            return;
+        }
+        try {
+            System.out.println(advancedService.deleteClass(Integer.parseInt(userInput)) ? "删除成功" : "删除失败，班级可能不存在或仍有学生");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteCourse() {
+        System.out.println("请输入要删除的课程ID：");
+        String userInput = new Scanner(System.in).nextLine();
+        if ("#end".equals(userInput)) {
+            return;
+        }
+        try {
+            System.out.println(advancedService.deleteCourse(userInput) ? "删除成功" : "删除失败，课程可能不存");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteDept() {
+        System.out.println("请输入要删除的部门ID：");
+        String userInput = new Scanner(System.in).nextLine();
+        if ("#end".equals(userInput)) {
+            return;
+        }
+        try {
+            System.out.println(advancedService.deleteDept(Integer.parseInt(userInput)) ? "删除成功" : "删除失败，部门可能不存在或仍有教师");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addAdmin() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("请输入用户名：");
+        String userName = scanner.nextLine();
+        System.out.println("请输入密码：");
+        String userPassword = scanner.nextLine();
+        if (!redisService.isExists(userName)) {
+            redisService.put(userName, userPassword);
+            System.out.println("管理员添加成功！");
+        } else
+            System.out.println("管理员添加失败，用户名已存在！");
+    }
+
+    private void removeAdmin() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("请输入用户名：");
+        String userName = scanner.nextLine();
+        System.out.println("请输入密码：");
+        String userPassword = scanner.nextLine();
+        if (advancedService.removeAdmin(userName, userPassword))
+            System.out.println("管理员删除成功！");
+        else
+            System.out.println("管理员删除失败，用户名或密码不正确！");
     }
 }

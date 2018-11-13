@@ -36,7 +36,8 @@ public final class RedisService {
 
     public Set<String> getSet(String key) {
         if (jedis.exists(key)) {
-            return jedis.smembers(key);
+            Set<String> strings = jedis.smembers(key);
+            return strings;
         } else {
             return null;
         }

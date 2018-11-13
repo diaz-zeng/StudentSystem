@@ -26,15 +26,14 @@ public class TeacherDao {
             statement.setString(2, teacher.getName());
             statement.setInt(3, teacher.getDept_ID());
             statement.setString(4, teacher.getTitle());
-            if (!statement.execute()) {
-                return null;
-            }
+            if (statement.executeUpdate()>0) {
+                return teacher;
+            } else return null;
 
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return teacher;
     }
 
 
@@ -58,6 +57,7 @@ public class TeacherDao {
             statement.setString(1, teacher.getName());
             statement.setString(2, teacher.getTitle());
             statement.setInt(3, teacher.getDept_ID());
+            return statement.executeUpdate()>0;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,7 +111,7 @@ public class TeacherDao {
     public boolean deleteTeacher(int teacherID) {
         try (PreparedStatement statement = connection.prepareStatement("DELETE FROM TEACHERS WHERE ID = ?")) {
             statement.setInt(1, teacherID);
-            return statement.execute();
+            return statement.executeUpdate()>0;
         } catch (Exception e) {
             e.printStackTrace();
         }

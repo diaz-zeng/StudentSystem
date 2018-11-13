@@ -90,8 +90,8 @@ public class BasicService {
     }
 
     public boolean getCourseInfo(String courseID) {
-        Set<String> set;
-        if (null != (set = redisService.getSet(courseID))) {
+        Set<String> set = redisService.getSet(courseID);
+        if (null != redisService.getSet(courseID) ){
             System.out.println("选择课程(" + courseAndResultsDao.getCourseInfo(courseID) + ")的学生：");
             for (String s : set) {
                 System.out.println(studentDao.getStudentByID(Integer.parseInt(s)));

@@ -7,6 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+/**
+ * 本类提供了对于Students表的操作
+ *
+ * @author Diaz
+ * @version 1
+ * @since 2018-11-11
+ */
 public class StudentDao {
     private Connection connection;
 
@@ -15,6 +22,12 @@ public class StudentDao {
     }
 
 
+    /**
+     * 像数据库插入一条学生记录
+     *
+     * @param student 由用户输入封装的学生对象
+     * @return 学生的学号，由数据库序列STUDENT_ID生成
+     */
     public Student createStudent(Student student) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO STUDENTS VALUES(?,?,?,?,?)");
              PreparedStatement preparedStatement1 = connection.prepareStatement("select STUDENT_ID.nextval from dual");
@@ -27,7 +40,7 @@ public class StudentDao {
             preparedStatement.setString(3, student.getGender());
             preparedStatement.setInt(4, student.getAge());
             preparedStatement.setInt(5, student.getClazz());
-            if (preparedStatement.execute())
+            if (preparedStatement.executeUpdate() > 0)
                 return student;
             else
                 return null;
@@ -39,6 +52,12 @@ public class StudentDao {
 
     }
 
+    /**
+     * 获取一个班下所有的学生信息
+     *
+     * @param classID 班级ID
+     * @return 查询结果，返回一个学生类型的集合
+     */
     public ArrayList<Student> getStudentOfClass(int classID) {
         ArrayList<Student> students = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.CLAZZ = ?")) {
@@ -97,7 +116,7 @@ public class StudentDao {
     public boolean deleteStudent(int studentID) {
         try (PreparedStatement statement = connection.prepareStatement("DELETE FROM STUDENTS WHERE ID = ?")) {
             statement.setInt(1, studentID);
-            return statement.execute();
+            return statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,6 +129,7 @@ public class StudentDao {
             statement.setInt(2, student.getAge());
             statement.setInt(3, student.getClazz());
             statement.setString(4, student.getGender());
+            return statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

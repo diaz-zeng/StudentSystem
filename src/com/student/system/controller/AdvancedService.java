@@ -54,7 +54,7 @@ public class AdvancedService {
             Student student = new Student(name, age, clazz, gender);
             student = studentDao.createStudent(student);
             if (student != null) {
-                System.out.println(student);
+                System.out.println(student.toString());
                 return true;
             } else
                 return false;
@@ -63,7 +63,7 @@ public class AdvancedService {
 
     public boolean deleteStudent(int id) {
         int clazz = studentDao.getStudentByID(id).getClazz();
-        return redisService.remove(String.valueOf(id), String.valueOf(clazz)) && studentDao.deleteStudent(id);
+        return studentDao.deleteStudent(id);
 
     }
 
@@ -77,7 +77,7 @@ public class AdvancedService {
     }
 
     public boolean deleteTeaher(int id) {
-        return studentDao.deleteStudent(id);
+        return teacherDao.deleteTeacher(id);
     }
 
     public boolean createCourse(String id, String name, int owner) {
@@ -102,7 +102,7 @@ public class AdvancedService {
 
     public boolean choseCourse(int studentID, String courseID) {
         if (studentDao.getStudentByID(studentID) != null && courseAndResultsDao.getCourseInfo(courseID) != null) {
-            redisService.put(courseID, String.valueOf(studentID));
+            redisService.putSet(courseID, String.valueOf(studentID));
             return true;
         } else return false;
     }
@@ -114,6 +114,11 @@ public class AdvancedService {
             return true;
         } else return false;
     }
+
+    public boolean deleteDept(int id) {
+        return classAndDeptDao.deleteDept(id);
+    }
+
 
     public boolean showDeptInfo(int dept_ID) {
         String dept_info = classAndDeptDao.getDeptInfo(dept_ID);
