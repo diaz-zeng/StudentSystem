@@ -71,7 +71,7 @@ public final class DatabaseService {
     public ArrayList<Teacher> getDetpInfo(int detp_ID) {
         ArrayList<Teacher> teachers = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement("SELECT TEACHERS.* FROM TEACHERS WHERE TEACHERS.DEPT_ID = ? ")) {
-            statement.setInt(1,detp_ID);
+            statement.setInt(1, detp_ID);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 teachers.add(new Teacher(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getInt(3)));
@@ -134,7 +134,7 @@ public final class DatabaseService {
     }
 
     public Student getStudentByID(int ID) {
-        Student student =null;
+        Student student = null;
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.ID = ?")) {
             statement.setInt(1, ID);
             ResultSet resultSet = statement.executeQuery();
@@ -159,6 +159,49 @@ public final class DatabaseService {
             e.printStackTrace();
         }
         return students;
+    }
+
+    public boolean deleteStudent(int studentID) {
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM STUDENTS WHERE ID = ?")) {
+            statement.setInt(1, studentID);
+            return statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteTeacher(int teacherID) {
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM TEACHERS WHERE ID = ?")) {
+            statement.setInt(1, teacherID);
+            return statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateStudent(Student student) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE STUDENTS SET NAME = ?,AGE = ?,CLAZZ = ? ,GENDER = ? WHERE ID = ?")) {
+            statement.setString(1, student.getName());
+            statement.setInt(2, student.getAge());
+            statement.setInt(3, student.getClazz());
+            statement.setString(4, student.getGender());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateTeacher(Teacher teacher) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE TEACHERS SET NAME = ?,TITLE = ?,DEPT_ID = ?  WHERE ID = ?")) {
+            statement.setString(1, teacher.getName());
+            statement.setString(2, teacher.getTitle());
+            statement.setInt(3, teacher.getDept_ID());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public ArrayList<Teacher> getAllTeachers() {
@@ -189,7 +232,7 @@ public final class DatabaseService {
     }
 
     public Teacher getTeacherByID(int ID) {
-        Teacher teacher =null;
+        Teacher teacher = null;
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM TEACHERS WHERE TEACHERS.ID = ?")) {
             statement.setInt(1, ID);
             ResultSet resultSet = statement.executeQuery();
