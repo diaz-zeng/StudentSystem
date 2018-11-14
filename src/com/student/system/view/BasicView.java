@@ -6,6 +6,13 @@ import com.student.system.controller.NotLoginExecption;
 
 import java.util.Scanner;
 
+/**
+ * 基本功能界面类
+ *
+ * @author Diaz
+ * @version 1
+ * @since 208-11-11
+ */
 public class BasicView {
     private LoginService loginService;
     private BasicService basicService;
@@ -15,6 +22,9 @@ public class BasicView {
         loginService = LoginService.getInstance();
     }
 
+    /**
+     * 启动方法
+     */
     public void Start() {
         while (true) {
             printMenu();
@@ -62,6 +72,9 @@ public class BasicView {
         }
     }
 
+    /**
+     * 打印菜单
+     */
     private void printMenu() {
         System.out.println("欢迎使用" + (loginService.isLogin() ? "(已登录)" : "(未登录)"));
         System.out.println("1.按学号查询学生");
@@ -75,6 +88,9 @@ public class BasicView {
         System.out.println("请选择(#end退出)：");
     }
 
+    /**
+     * 按学号查询学生
+     */
     public void menuGetStudentByID() {
         System.out.print("请输入学号");
         try {
@@ -88,6 +104,9 @@ public class BasicView {
         }
     }
 
+    /**
+     * 按姓名查询学生
+     */
     public void menuGetStudentsByName() {
         System.out.println("请输入姓名");
         try {
@@ -100,6 +119,9 @@ public class BasicView {
         }
     }
 
+    /**
+     * 按ID查询教师
+     */
     public void menuGetTeacherByID() {
 
         System.out.print("请输入ID");
@@ -114,6 +136,9 @@ public class BasicView {
         }
     }
 
+    /**
+     * 按姓名查询教师
+     */
     public void menuGetTeachersByName() {
         System.out.println("请输入姓名");
         try {
@@ -126,12 +151,18 @@ public class BasicView {
         }
     }
 
+    /**
+     * 成绩公示
+     */
     public void menuShowResults() {
         if (!basicService.getResults()) {
             System.out.println("没有登记过的成绩信息");
         }
     }
 
+    /**
+     * 显示课程信息
+     */
     public void menuShowCoureseInfo() {
         System.out.println("请输入课程编号");
         if (!basicService.getCourseInfo(new Scanner(System.in).nextLine())) {
@@ -139,6 +170,9 @@ public class BasicView {
         }
     }
 
+    /**
+     * 高级模式
+     */
     public void menuAdvancedMode() {
         try {
             AdvancedView advancedView = new AdvancedView();
@@ -148,6 +182,9 @@ public class BasicView {
         }
     }
 
+    /**
+     * 管理员登陆
+     */
     public void menuLogin() {
         String name, password;
         Scanner scanner = new Scanner(System.in);

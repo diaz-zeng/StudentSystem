@@ -72,6 +72,11 @@ public class StudentDao {
         return students;
     }
 
+    /**
+     * 获取所有的学生信息
+     *
+     * @return 学生信息
+     */
     public ArrayList<Student> getAllStudents() {
         ArrayList<Student> students = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS")) {
@@ -99,6 +104,12 @@ public class StudentDao {
         return student;
     }
 
+    /**
+     * 按照姓名获取所有符合条件的学生
+     *
+     * @param name 姓名
+     * @return 符合条件的学生
+     */
     public ArrayList<Student> getStudentByName(String name) {
         ArrayList<Student> students = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENTS.NAME = ?")) {
@@ -113,6 +124,12 @@ public class StudentDao {
         return students;
     }
 
+    /**
+     * 删除某个学生
+     *
+     * @param studentID 学生的学号
+     * @return 是否成功
+     */
     public boolean deleteStudent(int studentID) {
         try (PreparedStatement statement = connection.prepareStatement("DELETE FROM STUDENTS WHERE ID = ?")) {
             statement.setInt(1, studentID);
@@ -123,6 +140,12 @@ public class StudentDao {
         return false;
     }
 
+    /**
+     * 更新一个学生信息
+     *
+     * @param student 学生信息
+     * @return 是否成功
+     */
     public boolean updateStudent(Student student) {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE STUDENTS SET NAME = ?,AGE = ?,CLAZZ = ? ,GENDER = ? WHERE ID = ?")) {
             statement.setString(1, student.getName());

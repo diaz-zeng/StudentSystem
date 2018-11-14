@@ -6,6 +6,13 @@ import com.student.system.dao.RedisService;
 
 import java.util.Scanner;
 
+/**
+ * 高级功能界面类
+ *
+ * @author Diaz
+ * @version 1
+ * @since 2018-11-11
+ */
 public class AdvancedView {
     private AdvancedService advancedService;
     private RedisService redisService;
@@ -15,6 +22,9 @@ public class AdvancedView {
         redisService = RedisService.getInstance();
     }
 
+    /**
+     * 启动方法
+     */
     public void start() {
         while (true) {
             printMenu();
@@ -80,6 +90,18 @@ public class AdvancedView {
                         removeAdmin();
                         break;
                     }
+                    case 15: {
+                        updateStudent();
+                        break;
+                    }
+                    case 16: {
+                        updateTeacher();
+                        break;
+                    }
+                    case 17: {
+                        showDeptInfo();
+                        break;
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -88,6 +110,9 @@ public class AdvancedView {
 
     }
 
+    /**
+     * 打印菜单
+     */
     private void printMenu() {
         System.out.println("   高级功能");
         System.out.println(" 1.添加学生信息");
@@ -104,9 +129,15 @@ public class AdvancedView {
         System.out.println("12.删除课程");
         System.out.println("13.添加管理员");
         System.out.println("14.删除管理员");
+        System.out.println("15.更新学生");
+        System.out.println("16.更新教师");
+        System.out.println("17.查看部门信息");
         System.out.println("请选择(#end退出)：");
     }
 
+    /**
+     * 添加学生
+     */
     private void addStudent() {
         System.out.println("请输入学生信息（姓名,年龄,班级,性别（#end以退出））：");
         String userInput = new Scanner(System.in).nextLine();
@@ -124,6 +155,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 添加教师
+     */
     private void addTeacher() {
         System.out.println("请输入教师信息（姓名,职称,部门（#end以退出））：");
         String userInput = new Scanner(System.in).nextLine();
@@ -141,6 +175,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 添加部门
+     */
     private void addDept() {
         System.out.println("请输入部门的名字（此名称唯一）");
         String userInput = new Scanner(System.in).nextLine();
@@ -157,6 +194,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 添加班级
+     */
     private void addClass() {
         System.out.println("请输入班级的名字与指导老师ID");
         String userInput = new Scanner(System.in).nextLine();
@@ -177,6 +217,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 添加课程
+     */
     private void addCourse() {
         System.out.println("请输入课程编号,课程名与讲师ID（逗号分隔）：");
         String userInput = new Scanner(System.in).nextLine();
@@ -198,6 +241,9 @@ public class AdvancedView {
 
     }
 
+    /**
+     * 选课
+     */
     private void choseCourse() {
 
         System.out.println("请输入学生ID与课程编号（逗号分隔）：");
@@ -218,6 +264,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 删除学生
+     */
     private void deleteStudent() {
         System.out.println("请输入学号:");
         String userInput = new Scanner(System.in).nextLine();
@@ -231,7 +280,9 @@ public class AdvancedView {
         }
     }
 
-
+    /**
+     * 删除教师
+     */
     private void deleteTeacher() {
         System.out.println("请输入教师ID:");
         String userInput = new Scanner(System.in).nextLine();
@@ -245,6 +296,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 登记成绩
+     */
     private void putResults() {
         System.out.println("请输入学生ID，课程编号与成绩（逗号分隔）：");
         String userInput = new Scanner(System.in).nextLine();
@@ -264,6 +318,9 @@ public class AdvancedView {
 
     }
 
+    /**
+     * 删除班级
+     */
     private void deleteClass() {
         System.out.println("请输入要删除的班级ID：");
         String userInput = new Scanner(System.in).nextLine();
@@ -277,6 +334,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 删除课程
+     */
     private void deleteCourse() {
         System.out.println("请输入要删除的课程ID：");
         String userInput = new Scanner(System.in).nextLine();
@@ -290,6 +350,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 删除部门
+     */
     private void deleteDept() {
         System.out.println("请输入要删除的部门ID：");
         String userInput = new Scanner(System.in).nextLine();
@@ -303,6 +366,9 @@ public class AdvancedView {
         }
     }
 
+    /**
+     * 添加管理员
+     */
     private void addAdmin() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("请输入用户名：");
@@ -316,6 +382,9 @@ public class AdvancedView {
             System.out.println("管理员添加失败，用户名已存在！");
     }
 
+    /**
+     * 删除管理员
+     */
     private void removeAdmin() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("请输入用户名：");
@@ -326,5 +395,57 @@ public class AdvancedView {
             System.out.println("管理员删除成功！");
         else
             System.out.println("管理员删除失败，用户名或密码不正确！");
+    }
+
+    /**
+     * 更新学生信息
+     */
+    private void updateStudent() {
+        System.out.println("请输入新的学生信息（原ID,姓名,年龄,班级,性别（#end以退出））：");
+        String userInput = new Scanner(System.in).nextLine();
+        if ("#end".equals(userInput)) {
+            return;
+        } else {
+            try {
+                String[] datas = userInput.split(",");
+                if (!advancedService.updateStudent(Integer.parseInt(datas[0]), datas[1], Integer.parseInt(datas[2]), Integer.parseInt(datas[3]), datas[4])) {
+                    System.err.println("信息有误请重新输入");
+                } else
+                    System.err.println("更新成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 更新教师信息
+     */
+    private void updateTeacher() {
+        System.out.println("请输入新的教师信息（原ID,姓名,职称,部门ID（#end以退出））：");
+        String userInput = new Scanner(System.in).nextLine();
+        if ("#end".equals(userInput)) {
+            return;
+        } else {
+            try {
+                String[] datas = userInput.split(",");
+                if (!advancedService.updateTeacher(Integer.parseInt(datas[0]), datas[1], datas[2], Integer.parseInt(datas[3]))) {
+                    System.err.println("信息有误请重新输入");
+                } else
+                    System.err.println("更新成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 显示部门信息
+     */
+    public void showDeptInfo() {
+        System.out.println("请输入部门ID");
+        if (!advancedService.showDeptInfo(new Scanner(System.in).nextInt())) {
+            System.out.println("未找到相应的部门编号");
+        }
     }
 }
